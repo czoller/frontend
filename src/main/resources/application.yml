@@ -1,0 +1,5 @@
+zuul:
+  routes:
+    vehicles:
+      path: /vehicles/**
+      url: http://localhost:7070
