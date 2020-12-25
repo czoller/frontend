@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Your vehicles</title>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<h1>Your vehicles</h1>
+<ul id="vehicles">
+</ul>
+<script>
+$(document).ready(function () {
+	$.getJSON('vehicles/list?user=Sam%20Jones', function (data) {
+		data.forEach(v => {
+			$('#vehicles').append('<li>' + v + '</li>');
+		})
+	});
+});
+</script>
+</body>
+</html>
