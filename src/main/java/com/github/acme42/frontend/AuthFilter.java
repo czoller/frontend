@@ -44,14 +44,13 @@ public class AuthFilter implements Filter {
 			logger.info("New login with user: " + user.getName());
 			httpResponse.sendRedirect(httpRequest.getRequestURL().toString());
 		}
-		
-		if (session.getAttribute("user") != null) {
+		else if (session.getAttribute("user") != null) {
 			User user = (User) session.getAttribute("user");
 			logger.info("Already Logged in with user: " + user.getName());
 			chain.doFilter(request, response);
 		}
 		else {
-			logger.warn("Access denied.");
+			logger.warn("Access denied: " + httpRequest.getRequestURL());
 			httpResponse.sendError(HttpStatus.SC_UNAUTHORIZED);
 		}
 	}
