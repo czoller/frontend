@@ -1,4 +1,4 @@
-package com.github.acme42.frontend;
+package com.github.acme42.frontend.sso;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;

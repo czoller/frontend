@@ -1,4 +1,4 @@
-package com.github.acme42.frontend;
+package com.github.acme42.frontend.sso;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ public class AuthFilter implements Filter {
 	private final Logger logger;
 
 	public AuthFilter() {
-		logger = LoggerFactory.getLogger(this.getClass());
+		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class AuthFilter implements Filter {
 		}
 		else if (session.getAttribute("user") != null) {
 			User user = (User) session.getAttribute("user");
-			logger.info("Already Logged in with user: " + user.getName());
+			logger.debug("Already logged in with user: " + user.getName());
 			chain.doFilter(request, response);
 		}
 		else {
