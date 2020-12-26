@@ -11,7 +11,7 @@
 </ul>
 <script>
 $(document).ready(function () {
-	$.getJSON('vehicles/list?user=Sam%20Jones', function (data) {
+	$.getJSON('vehicles/list', function (data) {
 		data.forEach(v => {
 			$('#vehicles').append('<li>' + v + '</li>');
 		})
