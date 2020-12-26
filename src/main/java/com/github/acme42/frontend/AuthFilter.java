@@ -12,11 +12,23 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * Super simplified login and authorization filter; usually provided by company shared library
  */
+@Component
+@Order(1)
 public class AuthFilter implements Filter {
+	
+	private final Logger logger;
+
+	public AuthFilter() {
+		logger = LoggerFactory.getLogger(this.getClass());
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -29,13 +41,17 @@ public class AuthFilter implements Filter {
 			session.invalidate();
 			session = httpRequest.getSession(true);
 			session.setAttribute("user", user);
+			logger.info("New login with user: " + user.getName());
 			httpResponse.sendRedirect(httpRequest.getRequestURL().toString());
 		}
 		
 		if (session.getAttribute("user") != null) {
+			User user = (User) session.getAttribute("user");
+			logger.info("Already Logged in with user: " + user.getName());
 			chain.doFilter(request, response);
 		}
 		else {
+			logger.warn("Access denied.");
 			httpResponse.sendError(HttpStatus.SC_UNAUTHORIZED);
 		}
 	}
