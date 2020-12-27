@@ -9,12 +9,14 @@
 <h1>Your vehicles</h1>
 <ul id="vehicles">
 </ul>
+<p id="novehicles" style="font-style: italic">No vehicles available</p>
 <script>
 $(document).ready(function () {
 	$.getJSON('vehicles/list', function (data) {
 		data.forEach(v => {
 			$('#vehicles').append('<li>' + v + '</li>');
 		})
+		$('#novehicles').toggle(data.length == 0);
 	});
 });
 </script>
