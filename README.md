@@ -1,5 +1,7 @@
 # Simplified SPA Frontend as Example for StackOverflow question
 
+See https://stackoverflow.com/questions/65467958/alternative-to-zuul-to-forward-custom-token-stored-in-httpsession-as-request-par
+
 Start with: 
 ```
 ./mvnw spring-boot:run
