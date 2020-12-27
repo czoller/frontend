@@ -37,6 +37,7 @@ public class AuthFilter implements Filter {
 		HttpSession session = httpRequest.getSession();
 		
 		if (httpRequest.getMethod().equals("POST") && httpRequest.getParameter("user") != null) {
+			// Just for simplication, no decryption or verification here 
 			User user = User.fromJSON(httpRequest.getParameter("user"));
 			session.invalidate();
 			session = httpRequest.getSession(true);
