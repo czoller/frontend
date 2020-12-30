@@ -9,16 +9,40 @@
 <h1>Your vehicles</h1>
 <ul id="vehicles">
 </ul>
-<p id="novehicles" style="font-style: italic">No vehicles available</p>
+<form>
+<input id="newVehicle" type="text">
+<button id="addBtn" type="button">Add Vehicle</button>
+</form>
+<p id="noVehicles" style="font-style: italic">No vehicles available</p>
 <script>
 $(document).ready(function () {
-	$.getJSON('vehicles/list', function (data) {
-		data.forEach(v => {
-			$('#vehicles').append('<li>' + v + '</li>');
-		})
-		$('#novehicles').toggle(data.length == 0);
-	});
+  update();
+  $('#addBtn').click(add);
 });
+
+function update() {
+	$.getJSON('vehicles/list', function (data) {
+		$('#vehicles').html('');
+    data.forEach(v => {
+      $('#vehicles').append('<li>' + v + '</li>');
+    });
+    $('#noVehicles').toggle(data.length == 0);
+  });
+}
+
+function add() {
+	const vehicle = $('#newVehicle').val();
+  $.ajax({
+    type: 'POST',
+    url: 'vehicles/add',
+    data: { vehicle: vehicle }
+  }).done(function() {
+    alert( 'Added new vehicle: ' +  vehicle);
+    update();
+  }).fail(function() {
+    alert( "Error" );
+  });
+}
 </script>
 </body>
 </html>
