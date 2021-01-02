@@ -16,32 +16,41 @@
 </form>
 <script>
 $(document).ready(function () {
-  update();
-  $('#addBtn').click(add);
+	  update();
+	  $('#addBtn').click(add);
 });
 
 function update() {
-	$.getJSON('vehicles/list', function (data) {
-		$('#vehicles').html('');
-    data.forEach(v => {
-      $('#vehicles').append('<li>' + v + '</li>');
-    });
-    $('#noVehicles').toggle(data.length == 0);
-  });
+		$.getJSON('vehicles/list', function (data) {
+				$('#vehicles').html('');
+		    data.forEach(v => {
+		    	  $('#vehicles').append('<li>' + v + '</li>');
+		    });
+		    $('#noVehicles').toggle(data.length == 0);
+	  });
 }
 
 function add() {
-	const vehicle = $('#newVehicle').val();
-  $.ajax({
-    type: 'POST',
-    url: 'vehicles/add',
-    data: { vehicle: vehicle }
-  }).done(function() {
-    alert( 'Added new vehicle: ' +  vehicle);
-    update();
-  }).fail(function() {
-    alert( "Error" );
-  });
+		const vehicle = $('#newVehicle').val();
+	  $.ajax({
+		    type: 'POST',
+		    url: 'vehicles/add',
+		    headers: { 'X-CSRF-Token': getCsrfToken() },
+		    data: { 'vehicle': vehicle }
+	  }).done(function() {
+	     alert( 'Added new vehicle: ' +  vehicle);
+	    update();
+	  }).fail(function() {
+	     alert( "Error" );
+	  });
+}
+
+function getCsrfToken() {
+	  const cookies = document.cookie.split(';').map(c => c.trim().split('=')).filter(c => c[0] == 'CSRF-Token');
+	  if (cookies.length > 0) {
+				return cookies[0][1];
+	  }
+	  return null;
 }
 </script>
 </body>
