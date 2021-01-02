@@ -1,6 +1,8 @@
 package com.github.acme42.frontend.csrf;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,6 +27,7 @@ public class CsrfFilter implements Filter {
 	private static final String TOKEN_SESSION_ATTR = "CSRF-Token";
 	private static final String TOKEN_COOKIE_NAME = TOKEN_SESSION_ATTR;
 	private static final String TOKEN_HEADER_NAME = "X-" + TOKEN_COOKIE_NAME;
+	private static final int TOKEN_LENGTH_BYTES = 64;
 	private final Logger logger;
 
 	public CsrfFilter() {
@@ -37,7 +40,7 @@ public class CsrfFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		HttpSession session = httpRequest.getSession();
-		String token = (String) session.getAttribute(TOKEN_SESSION_ATTR);
+		String token = getTokenFromSession(session);
 		
 		if (httpRequest.getMethod().equals("GET")) {
 			if (token == null) {
@@ -53,9 +56,17 @@ public class CsrfFilter implements Filter {
 		}
 	}
 
-	private void setNewToken(HttpSession session, HttpServletResponse response) {
-		String token = "test"; //TODO
+	private String getTokenFromSession(HttpSession session) {
+		return (String) session.getAttribute(TOKEN_SESSION_ATTR);
+	}
+
+	private void setTokenToSession(HttpSession session, String token) {
 		session.setAttribute(TOKEN_SESSION_ATTR, token);
+	}
+	
+	private void setNewToken(HttpSession session, HttpServletResponse response) {
+		String token = computeToken(session);
+		setTokenToSession(session, token);
 		setCookie(response, token);
 	}
 	
@@ -68,5 +79,13 @@ public class CsrfFilter implements Filter {
 	
 	private boolean checkHeader(HttpServletRequest request, String token) {
 		return token.equals(request.getHeader(TOKEN_HEADER_NAME));
+	}
+	
+	private String computeToken(HttpSession session) {
+		SecureRandom random = new SecureRandom();
+		Base64.Encoder encoder = Base64.getUrlEncoder();
+		byte[] values = new byte[TOKEN_LENGTH_BYTES];
+		random.nextBytes(values);
+		return encoder.encodeToString(values);
 	}
 }
